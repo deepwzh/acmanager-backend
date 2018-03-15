@@ -44,8 +44,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'api',
-    'main',
-    'user',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
