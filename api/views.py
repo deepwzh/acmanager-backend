@@ -39,7 +39,7 @@ class UserAC(APIView):
 
 class SyncUser(APIView):
     def get(self, request):
-        conn = MySQLdb.connect(config.old_acmanager_db_config)
+        conn = MySQLdb.connect(**config.old_acmanager_db_config)
         cur = conn.cursor(cursorclass=DictCursor)
         cur.execute("select `username`, `password`, `realName`, `major`,"
                     " `type`, `uvaId`, `vjname`, `hduName`, `pojName`  from `user`")
@@ -50,7 +50,7 @@ class SyncUser(APIView):
         for user in data:
             base_user = User(username=user["username"], password=user["password"])
             base_user.save()
-            users.append(UserProfile(user=base_user, username=user["username"], realName=user["realName"], uvaId=user["uvaId"], vjname=user["vjname"], type=user['type']))
+            users.append(UserProfile(user=base_user, username=user["username"], realName=user["realName"], pojName=user["pojName"], uvaId=user["uvaId"], vjname=user["vjname"], type=user['type']))
             print(user['username'])
         UserProfile.objects.bulk_create(users)
         cur.close()
@@ -62,7 +62,7 @@ class Solved(object):
         def get(self, request, username):
             serializer = AOAPCSolvedSerializer(username)
             return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     class SolvedView(APIView):
         def get(self, request):
             pass

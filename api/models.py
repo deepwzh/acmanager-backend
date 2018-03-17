@@ -10,6 +10,7 @@ class UserProfile(models.Model):
     type = models.CharField(max_length=20, null=True)
     vjname = models.CharField(null=True, max_length=20)
     uvaId = models.CharField(null=True, max_length=20)
+    pojName = models.CharField(null=True, max_length=20)
 
 
 class Tongji(models.Model):

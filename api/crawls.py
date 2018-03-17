@@ -1,6 +1,6 @@
 import json
 import threading
-
+import re
 import requests
 import time
 from requests.exceptions import ConnectionError
@@ -11,6 +11,20 @@ from rest_framework.exceptions import NotFound, APIException
 from api.exceptions import ServiceUnavailable
 from api.models import Tongji
 from api.models import UserProfile
+
+def get_poj_problems(url):
+    """
+    抓取poj的Solved Problems List
+    return: problems列表
+    """
+    res = requests.get(url)
+    string=res.text
+    pattern=r'(?<=p\()[0-9]{4}(?=\))'
+    matchObj=re.finditer(pattern,string)
+    problemList=[]
+    for it in matchObj:
+        problemList.append(it.group())
+    return problemList
 
 
 def get_json_data(url, n=2):
@@ -60,6 +74,7 @@ def getUserAcList(username):
     # print(user.vjname)
     vj_url = None
     uva_url = None
+    poj_url = None
     # 从vj抓取题目
     vj_url = "https://cn.vjudge.net/user/solveDetail/%s" % user.vjname
     data = get_json_data(vj_url)
@@ -90,8 +105,12 @@ def getUserAcList(username):
         if record[2] == 90:
             tongjis.add(str("UVA" + "#" + str(id_to_number[record[1]])))
 
-
-    ############################
+    # 从poj抓取题目###########################################
+    poj_url = "http://poj.org/userstatus?user_id=%s" % user.pojName
+    poj_problems = get_poj_problems(poj_url)
+    #poj_ac_sets = set()
+    for poj_problem in poj_problems:
+        tongjis.add(str("POJ" + "#" + poj_problem))
     records = []
     for item in tongjis - exist_tongjis:
         oj_name, problem_id = str(item).split("#")
@@ -131,5 +150,3 @@ def get_user_ac_lists():
             thread.setDaemon(True)
             thread.start()
             threads.append(thread)
-
-
