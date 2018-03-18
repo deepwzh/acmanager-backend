@@ -9,7 +9,7 @@ import config
 from api.crawls import getUserAcList, get_user_ac_lists
 from api.models import UserProfile
 from api.serializers import TongjiSerializer, UserACSerializer, ProblemsSerializer, AOAPCSolvedSerializer, \
-    RankingSerializer, AoapcRankSerializer, UserProfileSerializer, UserLoginSerializer
+    RankingSerializer, AoapcRankSerializer, UserProfileSerializer, UserLoginSerializer, AllSolvedSerializer
 import MySQLdb
 
 
@@ -66,6 +66,11 @@ class Solved(object):
     class SolvedView(APIView):
         def get(self, request):
             pass
+
+    class AllSolvedView(APIView):
+        def get(self, request, username):
+            serializer = AllSolvedSerializer(username)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 class Problems(object):
     class AOAPCProblemView(APIView):

@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'problems/uva$', Problems.AOAPCProblemView.as_view()),
     # 用户解决题目一览
     url(r'users/(?P<username>.*)/solved/uva', Solved.AOAPCSolvedView.as_view()),  # 用户入门经典+训练指南题数详细统计
+    url(r'users/(?P<username>.*)/solved/all', Solved.AllSolvedView.as_view()), #用户解决题数统计
     url(r'users/(?P<username>.*)/solved$', Solved.SolvedView.as_view()),  # 用户汇总题数统计
     # 用户题数排名
     url(r'rankings/(?P<oj_name>.*)$', Rankings.RankingDetailView.as_view()),  # 用户单个OJ题数排名
