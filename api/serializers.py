@@ -62,6 +62,28 @@ class TongjiSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         pass
 
+class AllSolvedSerializer(object):
+    def __init__(self, username):
+        self.username = username
+
+    @property
+    def data(self):
+        res = dict()
+        res["user"] = self.username
+        res["data"] = dict()
+        res["data"]["ojs"] = list()
+        res["total"] = 0
+        total = 0
+        oj_names = Tongji.objects.filter(user=self.username).values("oj_name").distinct()#取出所有的oj_name且去重复
+        for oj_name in oj_names:
+            tongji = Tongji.objects.filter(user__username=self.username,oj_name=oj_name['oj_name']).values("problem_id")
+            problemList = list()
+            for i in tongji:
+                problemList.append(i['problem_id'])
+            res["data"]["ojs"].append({'oj_name': oj_name['oj_name'], 'total': len(problemList), 'solved': problemList})
+            total += len(problemList)
+        res["total"] = total
+        return res
 
 class AOAPCSolvedSerializer(object):
     def __init__(self, username):

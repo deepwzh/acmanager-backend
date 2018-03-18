@@ -26,7 +26,6 @@ def get_poj_problems(url):
         problemList.append(it.group())
     return problemList
 
-
 def get_json_data(url, n=2):
     """
     请求指定url，获取json文件
